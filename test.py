@@ -1,4 +1,5 @@
 import random
+import math
 
 List_val = []
 
@@ -9,36 +10,33 @@ def input_v(hand_size):
         List_val.append(value)
 
 
-# Factorial Function
-def factorielle(n):
-    if n == 0 or n == 1:
-        return 1
-    else:
-        return n * factorielle(n - 1)
-
-
-# Probability Calculation Function
+# calcule
 def calculer_probabilite(nb_max, nb, *values):
     try:
-        if nb == 5 or nb == 6:
-            proba_combinaison = [
-                0
-            ] * 7  # Initialize a list to store probabilities for 0 to 6 specified cards
-            for _ in range(100000):  # Simulating 100,000 draws
-                hand = random.sample(range(1, nb_max + 1), nb)
-                count_specified_cards = sum(1 for val in values if val in hand)
-                proba_combinaison[count_specified_cards] += 1
+        if nb < 1 or nb > 6:
+            raise ValueError("Le nombre de cartes doit être entre 1 et 6.")
 
-            for i in range(7):
-                proba_combinaison[i] = (proba_combinaison[i] / 100000) * 100
-                print(
-                    f"La probabilité d'avoir {i} cartes spécifiées dans une main de {nb} cartes dans un deck de {nb_max} cartes est : {proba_combinaison[i]:.2f}%"
+        if len(values) != nb:
+            raise ValueError(f"Le nombre de valeurs doit être égal à {nb}.")
+
+        proba = 1.0
+        for val in values:
+            if val < 1 or val > nb_max:
+                raise ValueError(
+                    "Les valeurs des cartes doivent être entre 1 et le nombre maximal dans le deck."
                 )
-        else:
-            print(f"Veuillez entrer une taille de main valide (5 ou 6).")
+            proba *= 1 / nb_max
 
-    except ValueError:
-        print("Veuillez entrer des valeurs valides.")
+        proba *= math.factorial(nb_max) / math.factorial(nb_max - nb)
+
+        proba *= 100
+        print(
+            f"La probabilité d'obtenir les cartes {', '.join(map(str, values))} "
+            f"dans une main de {nb} cartes dans un deck de {nb_max} cartes est : {proba:.2f}%"
+        )
+
+    except ValueError as e:
+        print(f"Erreur : {e}")
         no_yes()
 
 
@@ -47,10 +45,7 @@ def exe_proba():
     nb_max = int(input("Entrez le nombre maximal dans le deck : "))
     hand_size = int(input("Entrez la taille de la main (5 ou 6) : "))
     input_v(hand_size)
-    if hand_size == 5 or hand_size == 6:
-        calculer_probabilite(nb_max, hand_size, *List_val)
-    else:
-        print("Veuillez entrer une taille de main valide (5 ou 6).")
+    calculer_probabilite(nb_max, hand_size, *List_val)
 
 
 # Restart Function

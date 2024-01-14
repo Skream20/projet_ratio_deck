@@ -1,4 +1,5 @@
 import random
+from math import comb
 
 List_val = []
 
