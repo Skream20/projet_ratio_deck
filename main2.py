@@ -5,37 +5,37 @@ List_val = []
 
 def input_v(nb):
     if nb == 6:
-        value0 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value1 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value2 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value3 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value4 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value5 = int(input("Entrez une valeur (entre 1 - 75) : "))
+        value0 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value1 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value2 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value3 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value4 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value5 = int(input("Entrez valeur virtuel de la carte(1-75): "))
         List_val.extend([value0, value1, value2, value3, value4, value5])
     elif nb == 5:
-        value0 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value1 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value2 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value3 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value4 = int(input("Entrez une valeur (entre 1 - 75) : "))
+        value0 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value1 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value2 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value3 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value4 = int(input("Entrez valeur virtuel de la carte(1-75): "))
         List_val.extend([value0, value1, value2, value3, value4])
     elif nb == 4:
-        value0 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value1 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value2 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value3 = int(input("Entrez une valeur (entre 1 - 75) : "))
+        value0 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value1 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value2 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value3 = int(input("Entrez valeur virtuel de la carte(1-75): "))
         List_val.extend([value0, value1, value2, value3])
     elif nb == 3:
-        value0 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value1 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value2 = int(input("Entrez une valeur (entre 1 - 75) : "))
+        value0 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value1 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value2 = int(input("Entrez valeur virtuel de la carte(1-75): "))
         List_val.extend([value0, value1, value2])
     elif nb == 2:
-        value0 = int(input("Entrez une valeur (entre 1 - 75) : "))
-        value1 = int(input("Entrez une valeur (entre 1 - 75) : "))
+        value0 = int(input("Entrez valeur virtuel de la carte(1-75): "))
+        value1 = int(input("Entrez valeur virtuel de la carte(1-75): "))
         List_val.extend([value0, value1])
     else:
-        value0 = int(input("Entrez une valeur (entre 1 - 75) : "))
+        value0 = int(input("Entrez valeur virtuel de la carte(1-75): "))
         List_val.extend([value0])
 
 
@@ -48,14 +48,56 @@ def calculer_probabilite(nb_max, nb, *values):
                 f"La probabilité d'obtenir la carte {List_val[0]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
             )
         elif nb == 2:
-            proba = List_val[0] / nb_max * 100
+            proba = (List_val[0] / nb_max) * (List_val[1] / nb_max) * 100
             print(
-                f"La probabilité d'obtenir la carte {List_val[0]} et {List_val[1]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
+                f"La probabilité d'obtenir les cartes {List_val[0]} et {List_val[1]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
             )
-        # elif nb == 3:
-        # elif nb == 4:
-        # elif nb == 5:
-        # elif nb == 6:
+        elif nb == 3:
+            proba = (
+                (List_val[0] / nb_max)
+                * (List_val[1] / nb_max)
+                * (List_val[2] / nb_max)
+                * 100
+            )
+            print(
+                f"La probabilité d'obtenir les cartes {List_val[0]}, {List_val[1]} et {List_val[2]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
+            )
+        elif nb == 4:
+            proba = (
+                (List_val[0] / nb_max)
+                * (List_val[1] / nb_max)
+                * (List_val[2] / nb_max)
+                * (List_val[3] / nb_max)
+                * 100
+            )
+            print(
+                f"La probabilité d'obtenir les cartes {List_val[0]}, {List_val[1]}, {List_val[2]} et {List_val[3]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
+            )
+        elif nb == 5:
+            proba = (
+                (List_val[0] / nb_max)
+                * (List_val[1] / nb_max)
+                * (List_val[2] / nb_max)
+                * (List_val[3] / nb_max)
+                * (List_val[4] / nb_max)
+                * 100
+            )
+            print(
+                f"La probabilité d'obtenir les cartes {List_val[0]}, {List_val[1]}, {List_val[2]}, {List_val[3]} et {List_val[4]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
+            )
+        elif nb == 6:
+            proba = (
+                (List_val[0] / nb_max)
+                * (List_val[1] / nb_max)
+                * (List_val[2] / nb_max)
+                * (List_val[3] / nb_max)
+                * (List_val[4] / nb_max)
+                * (List_val[5] / nb_max)
+                * 100
+            )
+            print(
+                f"La probabilité d'obtenir les cartes {List_val[0]}, {List_val[1]}, {List_val[2]}, {List_val[3]}, {List_val[4]} et {List_val[5]} dans un deck de {nb_max} cartes est : {proba:.2f}%"
+            )
         else:
             print(f"Veuillez entrer une valeur entre 1 et 75 pour {nb}.")
 
