@@ -10,50 +10,6 @@ CarteVoulue = input(
 nbTirages = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
 nbDeFoisTiree = 0
 
-
-decklist = [
-    "Wulf",
-    "Wulf",
-    "Wulf",
-    "Raiden",
-    "Raiden",
-    "Raiden",
-    "Lumina",
-    "Ryko",
-    "Charge",
-    "Charge",
-    "Charge",
-    "Chaos Emperor Dragon",
-    "Levianeer",
-    "Levianeer",
-    "Levianeer",
-    "Creator",
-    "Nephthys",
-    "Valkyria",
-    "Valkyria",
-    "Valkyria",
-    "Collapserpent",
-    "Wyverbuster",
-    "Seyfert",
-    "Chaos Space",
-    "Chaos Space",
-    "Chaos Space",
-    "Eldlich",
-    "Nessie",
-    "Nessie",
-    "Mothman",
-    "Chupacabra",
-    "Jackalope",
-    "Snek",
-    "Photon Thrasher",
-    "Trick Clown",
-    "Plague",
-    "Reinforcements of the Army",
-    "Foolish",
-    "Monster Reborn",
-    "Order",
-]
-
 tirage = []
 
 
@@ -72,48 +28,6 @@ for i in range(nbTirages):
     decklist.clear()
     tirage.clear
 
-    decklist = decklist + [
-        "Wulf",
-        "Wulf",
-        "Wulf",
-        "Raiden",
-        "Raiden",
-        "Raiden",
-        "Lumina",
-        "Ryko",
-        "Charge",
-        "Charge",
-        "Charge",
-        "Chaos Emperor Dragon",
-        "Levianeer",
-        "Levianeer",
-        "Levianeer",
-        "Creator",
-        "Nephthys",
-        "Valkyria",
-        "Valkyria",
-        "Valkyria",
-        "Collapserpent",
-        "Wyverbuster",
-        "Seyfert",
-        "Chaos Space",
-        "Chaos Space",
-        "Chaos Space",
-        "Eldlich",
-        "Nessie",
-        "Nessie",
-        "Mothman",
-        "Chupacabra",
-        "Jackalope",
-        "Snek",
-        "Photon Thrasher",
-        "Trick Clown",
-        "Plague",
-        "Reinforcements of the Army",
-        "Foolish",
-        "Monster Reborn",
-        "Order",
-    ]
 
 print(CarteVoulue + " a été tirée " + str(nbDeFoisTiree) + " fois")
 
