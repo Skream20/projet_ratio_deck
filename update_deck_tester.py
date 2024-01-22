@@ -17,7 +17,7 @@ print("   Programme Skream_update : V.1.0   ")
 print("  Starting Hand Calculator")
 print(" ****************************\n")
 
-#your deck:
+#your deck
 decklist = [
     49036338, 94145021, 94145021, 94145021, 95500396,
     23434538, 23434538, 23434538, 38814750, 38814750,
