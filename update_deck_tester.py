@@ -2,17 +2,6 @@ import json
 import requests
 import random
 
-# def get_card_name(card_id):
-#     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
-#     params = {"id": card_id}
-#     response = requests.get(base_url, params=params)
-
-#     if response.status_code == 200:
-#         card_info = response.json()
-#         card_name = card_info["data"][0]["name"]
-#         return card_name
-#     else:
-#         return "Carte non trouvée"
 
 def get_card_name(card_id):
     for card in db:
@@ -20,11 +9,8 @@ def get_card_name(card_id):
             return card["name"]
     return "Carte non trouvée"
 
-
 def load_ygo_db():
-    # with open("ygoprodeck.json") as f:
-    #     db = json.load(f)["data"]
-    # return db
+
     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
     response = requests.get(base_url)
 
@@ -41,7 +27,7 @@ print(" ****************************\n")
 
 db = load_ygo_db()
 
-# deck
+# deck: edite decklist = [put the main of your .ydk file here]
 decklist = [
     49036338, 94145021, 94145021, 94145021, 95500396,
     23434538, 23434538, 23434538, 38814750, 38814750,
