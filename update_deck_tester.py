@@ -17,7 +17,7 @@ print("   Programme Skream_update : V.1.0   ")
 print("  Starting Hand Calculator")
 print(" ****************************\n")
 
-#your deck
+# deck
 decklist = [
     49036338, 94145021, 94145021, 94145021, 95500396,
     23434538, 23434538, 23434538, 38814750, 38814750,
@@ -30,42 +30,48 @@ decklist = [
     19510093, 16306932, 16306932, 27813661, 84792926
 ]
 
-CarteVoulue = input("Quelle carte souhaitez-vous tirer (Veuillez entrer l'id exact) ? >>> ")
-nbTirages = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
-nbDeFoisTiree = 0
+# input
+carte_input = input("Quelle carte souhaitez-vous tirer (Veuillez entrer l'ID ou le nom exact de la carte) ? >>> ")
 
+# ID or name
+if carte_input.isdigit():
+    card_want = int(carte_input)
+else:
+   # if chars
+    want = []
+    for card_id in decklist:
+        if carte_input in get_card_name(card_id):
+            want.append(card_id)
+    
+    if not want:
+        print(f"Carte '{carte_input}' non trouvée dans le deck.")
+        exit()
+    
+    # rand value
+    card_want = random.choice(want)
+
+nb_tirage = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
+nb_draw = 0
 tirage = []
 
-#va faire piocher les cartes 
-for _ in range(nbTirages):
+# tirage
+for _ in range(nb_tirage):
     main = random.sample(decklist, 5)
 
     for card_id in main:
         card_name = get_card_name(card_id)
-        if card_id == CarteVoulue and card_id not in tirage:
-            nbDeFoisTiree += 1
+        if card_id == card_want:
+            nb_draw += 1
             tirage.append(card_name)
-        else:
-            tirage.append(card_name)
-    
-    #print("Main tirée :")
-    #for card_id in main:
-        #card_name = get_card_name(card_id)
-        #print(card_name)
-        
-    #contraction de la boucle for lier à main tirer
-    print("Main tirée :", [get_card_name(card_id) for card_id in main])
-    
+
+    print("Main tirée :", end=" ")
+    for card_id in main:
+        print(get_card_name(card_id), end=" ")
+    print("")
     print("----------------------------\n")
+
     
-    #met à jour la dl sur les carte tirer dans le deck
-    U_decklist = []
-    for card_id in decklist:
-        if card_id not in main:
-            U_decklist.append(card_id)
-            decklist = U_decklist
+    #decklist = [card_id for card_id in decklist if card_id not in main]
 
-print(f"{get_card_name(CarteVoulue)} a été tirée {nbDeFoisTiree} fois")
-
-
-
+pourcentage = nb_draw / nb_tirage * 100
+print(f"{get_card_name(card_want)} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
