@@ -1,4 +1,5 @@
-- read txt file
-- calculate proba
-- hand test
-  => far ygo
+#HandTester-v1
+
+- calculate pourcentage to draw one input card
+
+---
