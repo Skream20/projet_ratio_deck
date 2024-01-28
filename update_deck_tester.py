@@ -1,21 +1,45 @@
+import json
 import requests
 import random
 
+# def get_card_name(card_id):
+#     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
+#     params = {"id": card_id}
+#     response = requests.get(base_url, params=params)
+
+#     if response.status_code == 200:
+#         card_info = response.json()
+#         card_name = card_info["data"][0]["name"]
+#         return card_name
+#     else:
+#         return "Carte non trouvée"
+
 def get_card_name(card_id):
+    for card in db:
+        if card["id"] == card_id:
+            return card["name"]
+    return "Carte non trouvée"
+
+
+def load_ygo_db():
+    # with open("ygoprodeck.json") as f:
+    #     db = json.load(f)["data"]
+    # return db
     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
-    params = {"id": card_id}
-    response = requests.get(base_url, params=params)
+    response = requests.get(base_url)
 
     if response.status_code == 200:
         card_info = response.json()
-        card_name = card_info["data"][0]["name"]
-        return card_name
+        return card_info["data"]
     else:
-        return "Carte non trouvée"
+        return "Impossible de charger la base de données"
+
 
 print("   Programme Skream_update : V.1.0   ")
 print("  Starting Hand Calculator")
 print(" ****************************\n")
+
+db = load_ygo_db()
 
 # deck
 decklist = [
