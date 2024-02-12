@@ -1,6 +1,8 @@
 import json
 import requests
 import random
+import time
+from collections import Counter
 
 
 def get_card_name(card_id):
@@ -9,16 +11,40 @@ def get_card_name(card_id):
             return card["name"]
     return "Carte non trouvée"
 
-def load_ygo_db():
 
+def load_ygo_db():
     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
+    print("Loading...", end='', flush=True)
+    time.sleep(2)  # Simulating some processing time
     response = requests.get(base_url)
 
     if response.status_code == 200:
         card_info = response.json()
         return card_info["data"]
     else:
-        return "Impossible de charger la base de données"
+        return "Impossible de charger la base de données après plusieurs tentatives"
+
+
+def record_drawn_hands(decklist, nb_tirage):
+    tirages = []
+
+    for _ in range(nb_tirage):
+        main = random.sample(decklist, 5)
+        tirages.append(tuple(main))
+
+    return tirages
+
+
+def display_most_repeated_hands(tirages, top_n=5):
+    counter = Counter(tirages)
+    most_common = counter.most_common(top_n)
+
+    print(f"\nLes {top_n} mains les plus fréquemment tirées sont :")
+    for i, (hand, count) in enumerate(most_common, 1):
+        print(f"Main {i} avec {count} répétitions :", end=" ")
+        for card_id in hand:
+            print(get_card_name(card_id), end=", ")
+        print("")
 
 
 print("   Programme Skream_update : V.1.0   ")
@@ -40,8 +66,11 @@ decklist = [
     19510093, 16306932, 16306932, 27813661, 84792926
 ]
 
+print('\r' + ' ' * 10 + '\r', end='', flush=True)
+
 # input
-carte_input = input("Quelle carte souhaitez-vous tirer (Veuillez entrer l'ID ou le nom exact de la carte) ? >>> ")
+carte_input = input(
+    "Quelle carte souhaitez-vous tirer (Veuillez entrer l'ID ou le nom exact de la carte) ? >>> ")
 
 # ID or name
 if carte_input.isdigit():
@@ -52,36 +81,30 @@ else:
     for card_id in decklist:
         if carte_input in get_card_name(card_id):
             want.append(card_id)
-    
+
     if not want:
         print(f"Carte '{carte_input}' non trouvée dans le deck.")
         exit()
-    
+
     # rand value
     card_want = random.choice(want)
 
 nb_tirage = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
-nb_draw = 0
-tirage = []
 
-# tirage
-for _ in range(nb_tirage):
-    main = random.sample(decklist, 5)
+# Record all drawn hands
+tirages = record_drawn_hands(decklist, nb_tirage)
 
-    for card_id in main:
-        card_name = get_card_name(card_id)
-        if card_id == card_want:
-            nb_draw += 1
-            tirage.append(card_name)
-
-    print("Main tirée :", end=" ")
-    for card_id in main:
+# Display each drawn hand
+for i, tirage in enumerate(tirages, 1):
+    print(f"Main {i} tirée :", end=" ")
+    for card_id in tirage:
         print(get_card_name(card_id), end=" ")
     print("")
-    print("----------------------------\n")
 
-    
-    #decklist = [card_id for card_id in decklist if card_id not in main]
+# Calculate and display the percentage of the most repeated hands
+display_most_repeated_hands(tirages)
 
+# Display the percentage for the specified card
+nb_draw = sum(1 for tirage in tirages if card_want in tirage)
 pourcentage = nb_draw / nb_tirage * 100
 print(f"{get_card_name(card_want)} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
