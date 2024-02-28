@@ -14,8 +14,7 @@ def get_card_name(card_id):
 
 def load_ygo_db():
     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
-    print("Loading...", end='', flush=True)
-    time.sleep(2)  # Simulating some processing time
+
     response = requests.get(base_url)
 
     if response.status_code == 200:
@@ -95,16 +94,17 @@ nb_tirage = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
 tirages = record_drawn_hands(decklist, nb_tirage)
 
 # Display each drawn hand
+
 for i, tirage in enumerate(tirages, 1):
     print(f"Main {i} tirée :", end=" ")
     for card_id in tirage:
         print(get_card_name(card_id), end=" ")
     print("")
 
-# Calculate and display the percentage of the most repeated hands
-display_most_repeated_hands(tirages)
 
 # Display the percentage for the specified card
 nb_draw = sum(1 for tirage in tirages if card_want in tirage)
+# Calculate and display the percentage of the most repeated hands
+display_most_repeated_hands(tirages)
 pourcentage = nb_draw / nb_tirage * 100
 print(f"{get_card_name(card_want)} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
