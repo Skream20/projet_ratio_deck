@@ -1,16 +1,9 @@
 name: Yu-Gi-Oh! Card Draw Simulation
 
 on:
-  workflow_dispatch:
-    inputs:
-      nb_tirage:
-        description: 'Number of draws'
-        required: true
-        default: 100
-      carte_input:
-        description: 'Card ID to draw'
-        required: true
-        default: 56347375
+  push:
+    branches:
+      - main
 
 jobs:
   simulate-draw:
@@ -32,6 +25,4 @@ jobs:
 
       - name: Run script
         run: |
-          NB_TIRAGE=${{ github.event.inputs.nb_tirage }}
-          CARTE_INPUT=${{ github.event.inputs.carte_input }}
-          python ${{ github.workspace }}/update_deck_tester.py
+          NB_TIRAGE=100 CARTE_INPUT=56347375 python ${{ github.workspace }}/update_deck_tester.py
