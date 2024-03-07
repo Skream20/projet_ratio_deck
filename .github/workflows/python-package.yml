@@ -25,6 +25,4 @@ jobs:
 
       - name: Run script
         run: |
-          export NB_TIRAGE=100
-          export CARTE_INPUT=56347375
-          python ${{ github.workspace }}/update_deck_tester.py
+          NB_TIRAGE=100 CARTE_INPUT=56347375 python ${{ github.workspace }}/update_deck_tester.py
