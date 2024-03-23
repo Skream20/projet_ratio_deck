@@ -1,0 +1,9 @@
+Résultats de la simulation :
+----------------------------------
+Nombre total de tirages : 1
+Temps d'exécution : 0.0001 secondes
+Nombre de tirages par seconde : 11244.78
+Pourcentage de chance de tirer la carte 'Purple Poison Magician' : 0.00%
+----------------------------------
+Les mains les plus fréquemment tirées :
+Main 1 avec 1 répétitions : ['Wisdom-Eye Magician', 'Pot of Prosperity', 'Artifact Scythe', 'Pot of Prosperity', 'Star Pendulumgraph']

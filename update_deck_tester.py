@@ -5,18 +5,9 @@ import time
 from collections import Counter
 
 
-def get_card_name(card_id):
-    for card in db:
-        if card["id"] == card_id:
-            return card["name"]
-    return "Carte non trouvée"
-
-
 def load_ygo_db():
     base_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
-
     response = requests.get(base_url)
-
     if response.status_code == 200:
         card_info = response.json()
         return card_info["data"]
@@ -24,26 +15,32 @@ def load_ygo_db():
         return "Impossible de charger la base de données après plusieurs tentatives"
 
 
+def load_card_names(db):
+    return {card["id"]: card["name"] for card in db}
+
+
 def record_drawn_hands(decklist, nb_tirage):
     tirages = []
-
     for _ in range(nb_tirage):
         main = random.sample(decklist, 5)
         tirages.append(tuple(main))
-
     return tirages
 
 
 def display_most_repeated_hands(tirages, top_n=5):
     counter = Counter(tirages)
     most_common = counter.most_common(top_n)
-
-    print(f"\nLes {top_n} mains les plus fréquemment tirées sont :")
+    result = []
     for i, (hand, count) in enumerate(most_common, 1):
-        print(f"Main {i} avec {count} répétitions :", end=" ")
-        for card_id in hand:
-            print(get_card_name(card_id), end=", ")
-        print("")
+        hand_cards = [card_names[card_id] for card_id in hand]
+        result.append((hand_cards, count))
+    return result
+
+
+def print_ydk_content(decklist):
+    print("\nContenu du fichier .ydk :\n")
+    for card_id in decklist:
+        print(f"Carte ID : {card_id}, Nom : {card_names[card_id]}")
 
 
 print("   Programme Skream_update : V.1.0   ")
@@ -51,60 +48,84 @@ print("  Starting Hand Calculator")
 print(" ****************************\n")
 
 db = load_ygo_db()
+card_names = load_card_names(db)
 
-# deck: edite decklist = [put the main of your .ydk file here]
-decklist = [
-    49036338, 94145021, 94145021, 94145021, 95500396,
-    23434538, 23434538, 23434538, 38814750, 38814750,
-    82224646, 83334932, 83334932, 83334932, 14558127,
-    14558127, 14558127, 78391364, 90361010, 90361010,
-    92746535, 92746535, 40318957, 40318957, 58092907,
-    28720123, 28720123, 56347375, 56347375, 56347375,
-    92332424, 92332424, 92332424, 82112494, 82112494,
-    82112494, 56727340, 17330916, 76794549, 10604644,
-    19510093, 16306932, 16306932, 27813661, 84792926
-]
+# Charger le fichier .ydk
+while True:
+    file_path = input("Veuillez entrer le chemin du fichier .ydk : ")
+    try:
+        with open(file_path, "r") as file:
+            decklist = []
+            for line in file:
+                line = line.strip()
+                if line.startswith("#main"):
+                    break
+            for line in file:
+                line = line.strip()
+                if line.startswith("#"):
+                    break
+                card_id = int(line)
+                decklist.append(card_id)
+            print_ydk_content(decklist)
+            break
+    except FileNotFoundError:
+        print("Fichier non trouvé. Veuillez entrer un chemin de fichier valide.")
 
-print('\r' + ' ' * 10 + '\r', end='', flush=True)
-
-# input
 carte_input = input(
     "Quelle carte souhaitez-vous tirer (Veuillez entrer l'ID ou le nom exact de la carte) ? >>> ")
-
-# ID or name
 if carte_input.isdigit():
     card_want = int(carte_input)
 else:
-   # if chars
-    want = []
-    for card_id in decklist:
-        if carte_input in get_card_name(card_id):
-            want.append(card_id)
-
+    want = {
+        card_id for card_id in decklist if carte_input in card_names[card_id]}
     if not want:
         print(f"Carte '{carte_input}' non trouvée dans le deck.")
         exit()
-
-    # rand value
-    card_want = random.choice(want)
+    card_want = random.choice(list(want))
 
 nb_tirage = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
 
-# Record all drawn hands
+start_time = time.time()  # Start time
+
 tirages = record_drawn_hands(decklist, nb_tirage)
 
-# Display each drawn hand
+end_time = time.time()  # End time
 
 for i, tirage in enumerate(tirages, 1):
     print(f"Main {i} tirée :", end=" ")
     for card_id in tirage:
-        print(get_card_name(card_id), end=" ")
+        print(card_names[card_id], end=" ")
     print("")
 
-
-# Display the percentage for the specified card
 nb_draw = sum(1 for tirage in tirages if card_want in tirage)
-# Calculate and display the percentage of the most repeated hands
 display_most_repeated_hands(tirages)
 pourcentage = nb_draw / nb_tirage * 100
-print(f"{get_card_name(card_want)} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
+print(
+    f"{card_names[card_want]} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
+
+print(f"Temps d'exécution : {end_time - start_time:.4f} secondes")
+
+# Calcul du nombre total de tirages
+total_tirages = nb_tirage
+
+# Temps total d'exécution en secondes
+temps_execution = end_time - start_time
+
+# Nombre de tirages par seconde
+tirages_par_seconde = total_tirages / temps_execution
+
+print(f"Nombre de tirages par seconde : {tirages_par_seconde:.2f}")
+
+# Enregistrer les résultats dans un fichier
+with open("resultats.txt", "w") as file:
+    file.write("Résultats de la simulation :\n")
+    file.write("----------------------------------\n")
+    file.write(f"Nombre total de tirages : {total_tirages}\n")
+    file.write(f"Temps d'exécution : {temps_execution:.4f} secondes\n")
+    file.write(f"Nombre de tirages par seconde : {tirages_par_seconde:.2f}\n")
+    file.write(
+        f"Pourcentage de chance de tirer la carte '{card_names[card_want]}' : {pourcentage:.2f}%\n")
+    file.write("----------------------------------\n")
+    file.write("Les mains les plus fréquemment tirées :\n")
+    for i, (hand, count) in enumerate(display_most_repeated_hands(tirages), 1):
+        file.write(f"Main {i} avec {count} répétitions : {hand}\n")
