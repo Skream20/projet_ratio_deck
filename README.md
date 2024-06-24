@@ -24,7 +24,7 @@ The program `ygo_handtester V.1.0` is a starting hand simulator for the Yu-Gi-Oh
 ### How to Use the Program
 
 #### Step 1: Launch the Program
-Run the `Skream_update: V.1.0` Python program.
+Run the `ygo_handtester V.1.0` Python program.
 
 #### Step 2: Load the Database
 The program will automatically load card information from the API `https://db.ygoprodeck.com/api/v7/cardinfo.php`. Ensure you have an active internet connection.
