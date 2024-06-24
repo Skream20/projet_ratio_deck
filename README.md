@@ -1,7 +1,7 @@
-## Explanation of the Program `Skream_update: V.1.0`
+## Explanation of the Program `ygo_handtester V.1.0`
 
 ### Description
-The program `Skream_update: V.1.0` is a starting hand simulator for the Yu-Gi-Oh! card game. It allows you to load a deck list from a `.ydk` file, simulate a large number of starting hand draws, and analyze the results to provide various statistics on the cards and the hands drawn.
+The program `ygo_handtester V.1.0` is a starting hand simulator for the Yu-Gi-Oh! card game. It allows you to load a deck list from a `.ydk` file, simulate a large number of starting hand draws, and analyze the results to provide various statistics on the cards and the hands drawn.
 
 ### Features
 1. **Loading the Yu-Gi-Oh! Database:**
