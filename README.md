@@ -1,4 +1,4 @@
-## Explanation of the Program `hand_tester_ygo V.1.0`
+## Explanation of the Program `Skream_update: V.1.0`
 
 ### Description
 The program `Skream_update: V.1.0` is a starting hand simulator for the Yu-Gi-Oh! card game. It allows you to load a deck list from a `.ydk` file, simulate a large number of starting hand draws, and analyze the results to provide various statistics on the cards and the hands drawn.
@@ -47,6 +47,3 @@ The program calculates and displays the number of draws per second, the total nu
 
 ### Saving the Results
 The results of the simulation, including the percentages of drawing each specific card, the most frequent hands, and performance statistics, are saved to a text file named `resultats.txt`.
-
-### Conclusion
-The program `Skream_update: V.1.0` is a powerful tool for analyzing draw chances in a Yu-Gi-Oh! deck. By following the steps above, you can load your deck, perform simulations, and obtain precise statistics to improve your game strategy.
