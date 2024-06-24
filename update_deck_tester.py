@@ -2,6 +2,7 @@ import json
 import requests
 import random
 import time
+import math
 from collections import Counter
 
 
@@ -12,35 +13,73 @@ def load_ygo_db():
         card_info = response.json()
         return card_info["data"]
     else:
-        return "Impossible de charger la base de données après plusieurs tentatives"
+        raise Exception("Impossible de charger la base de données")
 
 
 def load_card_names(db):
     return {card["id"]: card["name"] for card in db}
 
 
+def load_decklist(file_path):
+    decklist = []
+    with open(file_path, "r") as file:
+        found_main = False
+        for line in file:
+            line = line.strip()
+            if found_main and line.startswith("#"):
+                break
+            if found_main:
+                decklist.append(int(line))
+            elif line.startswith("#main"):
+                found_main = True
+    return decklist
+
+
 def record_drawn_hands(decklist, nb_tirage):
-    tirages = []
-    for _ in range(nb_tirage):
-        main = random.sample(decklist, 5)
-        tirages.append(tuple(main))
-    return tirages
+    return [random.sample(decklist, 5) for _ in range(nb_tirage)]
 
 
 def display_most_repeated_hands(tirages, top_n=5):
-    counter = Counter(tirages)
-    most_common = counter.most_common(top_n)
-    result = []
-    for i, (hand, count) in enumerate(most_common, 1):
-        hand_cards = [card_names[card_id] for card_id in hand]
-        result.append((hand_cards, count))
-    return result
+    counter = Counter(tuple(hand) for hand in tirages)
+    return counter.most_common(top_n)
 
 
-def print_ydk_content(decklist):
-    print("\nContenu du fichier .ydk :\n")
-    for card_id in decklist:
-        print(f"Carte ID : {card_id}, Nom : {card_names[card_id]}")
+def calculate_card_percentage(card_id, tirages):
+    nb_draw = sum(1 for tirage in tirages if card_id in tirage)
+    return nb_draw / len(tirages) * 100
+
+
+def calculate_hand_probability(cards, tirages, num_cards):
+    successful_draws = 0
+    for hand in tirages:
+        if sum(card_id in hand for card_id in cards) == num_cards:
+            successful_draws += 1
+    return successful_draws / len(tirages) * 100
+
+
+def display_options(cards, tirages):
+    print("Que souhaitez-vous afficher ?")
+    print("1. Pourcentage de chance de piocher une carte spécifique.")
+    print("2. Les mains les plus fréquemment tirées.")
+    print("3. Probabilité d'avoir un certain nombre de cartes précises dans la main.")
+
+    choice = input("Entrez votre choix (1, 2 ou 3) : ")
+    
+    if choice == '1':
+        for card_id in cards:
+            pourcentage = calculate_card_percentage(card_id, tirages)
+            print(f"{card_names[card_id]} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
+    elif choice == '2':
+        most_common_hands = display_most_repeated_hands(tirages)
+        print("Les mains les plus fréquemment tirées :")
+        for i, (hand, count) in enumerate(most_common_hands, 1):
+            print(f"Main {i} avec {count} répétitions : {[card_names[card_id] for card_id in hand]}")
+    elif choice == '3':
+        num_cards = int(input("Entrez le nombre de cartes précises que vous souhaitez avoir dans la main : "))
+        prob = calculate_hand_probability(cards, tirages, num_cards)
+        print(f"Probabilité d'avoir exactement {num_cards} cartes précises dans la main : {prob:.2f}%")
+    else:
+        print("Choix invalide.")
 
 
 print("   Programme Skream_update : V.1.0   ")
@@ -54,36 +93,27 @@ card_names = load_card_names(db)
 while True:
     file_path = input("Veuillez entrer le chemin du fichier .ydk : ")
     try:
-        with open(file_path, "r") as file:
-            decklist = []
-            for line in file:
-                line = line.strip()
-                if line.startswith("#main"):
-                    break
-            for line in file:
-                line = line.strip()
-                if line.startswith("#"):
-                    break
-                card_id = int(line)
-                decklist.append(card_id)
-            print_ydk_content(decklist)
-            break
+        decklist = load_decklist(file_path)
+        print("\nContenu du fichier .ydk :\n")
+        for card_id in decklist:
+            print(f"Carte ID : {card_id}, Nom : {card_names[card_id]}")
+        break
     except FileNotFoundError:
         print("Fichier non trouvé. Veuillez entrer un chemin de fichier valide.")
 
-carte_input = input(
-    "Quelle carte souhaitez-vous tirer (Veuillez entrer l'ID ou le nom exact de la carte) ? >>> ")
-if carte_input.isdigit():
-    card_want = int(carte_input)
-else:
-    want = {
-        card_id for card_id in decklist if carte_input in card_names[card_id]}
-    if not want:
-        print(f"Carte '{carte_input}' non trouvée dans le deck.")
-        exit()
-    card_want = random.choice(list(want))
+cartes_input = input("Quelles cartes souhaitez-vous tirer (Veuillez entrer les IDs ou les noms exacts des cartes, séparés par des virgules) ? >>> ")
+cards_want = []
+for carte_input in cartes_input.split(","):
+    if carte_input.isdigit():
+        cards_want.append(int(carte_input))
+    else:
+        matches = [card_id for card_id in decklist if carte_input in card_names[card_id]]
+        if not matches:
+            print(f"Carte '{carte_input}' non trouvée dans le deck.")
+            continue
+        cards_want.extend(matches)
 
-nb_tirage = int(input("Combien de tirages voulez-vous effectuer ? >>> "))
+nb_tirage = math.comb(len(decklist), 5)
 
 start_time = time.time()  # Start time
 
@@ -91,19 +121,8 @@ tirages = record_drawn_hands(decklist, nb_tirage)
 
 end_time = time.time()  # End time
 
-for i, tirage in enumerate(tirages, 1):
-    print(f"Main {i} tirée :", end=" ")
-    for card_id in tirage:
-        print(card_names[card_id], end=" ")
-    print("")
-
-nb_draw = sum(1 for tirage in tirages if card_want in tirage)
-display_most_repeated_hands(tirages)
-pourcentage = nb_draw / nb_tirage * 100
-print(
-    f"{card_names[card_want]} a {pourcentage:.2f}% de chance d'être piochée sur {nb_tirage}-tirage")
-
-print(f"Temps d'exécution : {end_time - start_time:.4f} secondes")
+# Afficher les options pour l'utilisateur
+display_options(cards_want, tirages)
 
 # Calcul du nombre total de tirages
 total_tirages = nb_tirage
@@ -123,9 +142,10 @@ with open("resultats.txt", "w") as file:
     file.write(f"Nombre total de tirages : {total_tirages}\n")
     file.write(f"Temps d'exécution : {temps_execution:.4f} secondes\n")
     file.write(f"Nombre de tirages par seconde : {tirages_par_seconde:.2f}\n")
-    file.write(
-        f"Pourcentage de chance de tirer la carte '{card_names[card_want]}' : {pourcentage:.2f}%\n")
+    file.write("Pourcentages de chance de piocher chaque carte spécifique :\n")
+    for card_id in cards_want:
+        file.write(f"{card_names[card_id]} : {calculate_card_percentage(card_id, tirages):.2f}%\n")
     file.write("----------------------------------\n")
     file.write("Les mains les plus fréquemment tirées :\n")
     for i, (hand, count) in enumerate(display_most_repeated_hands(tirages), 1):
-        file.write(f"Main {i} avec {count} répétitions : {hand}\n")
+        file.write(f"Main {i} avec {count} répétitions : {[card_names[card_id] for card_id in hand]}\n")
